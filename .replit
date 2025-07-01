@@ -1,0 +1,30 @@
+modules = ["arduino", "python-3.11"]
+
+[nix]
+channel = "stable-24_05"
+packages = ["zip"]
+
+[workflows]
+runButton = "Project"
+
+[[workflows.workflow]]
+name = "Project"
+mode = "parallel"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "ESP32 OS Server"
+
+[[workflows.workflow]]
+name = "ESP32 OS Server"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python -m http.server 5000"
+waitForPort = 5000
+
+[[ports]]
+localPort = 5000
+externalPort = 80
