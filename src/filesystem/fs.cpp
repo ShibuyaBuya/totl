@@ -3,7 +3,10 @@
  */
 
 #include "fs.h"
-
+#include "FS.h"
+#include "SPIFFS.h"
+#define FORMAT_SPIFFS_IF_FAILED true
+using namespace fs;
 FileSystem::FileSystem() : initialized(false), mounted(false), 
                           totalBytes(0), usedBytes(0) {
 }
@@ -46,7 +49,6 @@ bool FileSystem::createFile(const char* path) {
     if (!initialized || !path) {
         return false;
     }
-    
     File file = SPIFFS.open(path, "w");
     if (!file) {
         return false;

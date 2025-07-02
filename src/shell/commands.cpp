@@ -11,7 +11,7 @@
 // External references
 extern Kernel* kernel;
 extern HAL* hal;
-extern FileSystem* fs;
+extern FileSystem* fs_;
 
 // Command table
 const Command Commands::commandList[] = {
@@ -99,7 +99,14 @@ const char* Commands::getCommandDescription(const char* cmd) {
 void Commands::cmd_help(char args[][32], int argCount) {
     if (argCount > 0) {
         // Show help for specific command
-        const char* desc = Commands::getCommandDescription(args[0]);
+        
+        const char* desc;
+        for (int i = 0; i < commandCount; i++) {
+            if (strcasecmp(args[0], commandList[i].name) == 0) {
+                desc = commandList[i].description;
+                break;
+            }
+        }
         if (desc) {
             Serial.printf("Command: %s\n", args[0]);
             Serial.printf("Description: %s\n", desc);
@@ -110,14 +117,18 @@ void Commands::cmd_help(char args[][32], int argCount) {
         // Show all commands
         Serial.println("ESP32-OS Command Reference:");
         Serial.println("===========================");
-        Commands::listCommands();
+        Serial.println("Available commands:");
+        for (int i = 0; i < commandCount; i++)
+        {
+            Serial.printf("  %-12s - %s\n", commandList[i].name, commandList[i].description);
+        }
         Serial.println("\nUse 'help <command>' for detailed information about a specific command.");
     }
 }
 
 void Commands::cmd_ls(char args[][32], int argCount) {
-    if (fs) {
-        fs->listFiles();
+    if (fs_) {
+        fs_->listFiles();
     } else {
         Serial.println("File system not available");
     }

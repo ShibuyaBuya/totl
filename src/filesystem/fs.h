@@ -3,13 +3,13 @@
  * Simple file system interface using SPIFFS
  */
 
-#ifndef FS_H
-#define FS_H
+#ifndef FS_T_H
+#define FS_T_H
 
 #include <Arduino.h>
+#include "FS.h"
 #include <SPIFFS.h>
 #include "../config/config.h"
-
 struct FileInfo {
     char name[FS_MAX_PATH_LENGTH];
     size_t size;

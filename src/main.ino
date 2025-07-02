@@ -5,18 +5,19 @@
  * This file contains the setup() and loop() functions required by Arduino framework
  * and initializes all OS components including kernel, shell, and hardware abstraction
  */
-
+#include "FS.h"
+#include "SPIFFS.h"
 #include "kernel/kernel.h"
 #include "shell/shell.h"
 #include "hal/hal.h"
 #include "filesystem/fs.h"
 #include "config/config.h"
-
+#define FORMAT_SPIFFS_IF_FAILED true
 // Global system objects
 Kernel* kernel;
 Shell* shell;
 HAL* hal;
-FileSystem* fs;
+FileSystem* fs_;
 
 void setup() {
     // Initialize serial communication for shell interface
@@ -38,8 +39,8 @@ void setup() {
     Serial.println("[OK] Hardware Abstraction Layer initialized");
     
     // Initialize File System
-    fs = new FileSystem();
-    if (!fs->init()) {
+    fs_ = new FileSystem();
+    if (!fs_->init()) {
         Serial.println("WARNING: File System initialization failed");
         // Continue without filesystem - non-critical
     } else {
