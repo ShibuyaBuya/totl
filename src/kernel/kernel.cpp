@@ -5,7 +5,12 @@
 
 #include "kernel.h"
 #include <esp_system.h>
-
+#include <vector>
+#include <string>
+#include <SPIFFS.h>
+#include <SD_MMC.h>
+#include <SD.h>
+#include <TFT_eSPI.h>
 Kernel::Kernel() : scheduler(nullptr), memoryManager(nullptr), 
                    systemMutex(nullptr), initialized(false), healthy(false),
                    bootTime(0), uptime(0), totalTasks(0), freeMem(0), minFreeMem(0) {
@@ -40,7 +45,8 @@ bool Kernel::init() {
         Serial.println("Kernel: Failed to initialize scheduler");
         return false;
     }
-    
+    std::vector<std::string> disks;
+    diskList(disks);
     // Record boot time
     bootTime = millis();
     
@@ -51,7 +57,46 @@ bool Kernel::init() {
     Serial.println("Kernel: Core system initialized successfully");
     return true;
 }
+void Kernel::diskList(std::vector<std::string> &disks){
+    // get list of disks
+    Serial.println("Kernel: Listing disks...");
+    // get all device storage that connected
+    
 
+    // Example: Simulate disk enumeration for ESP32 (SPIFFS, SD, etc.)
+    
+
+    // Check for SPIFFS
+    if (SPIFFS.begin(true)) {
+        // Use a descriptive name for SPIFFS since partitionLabel_ is private
+        disks.push_back("spiffs");
+        SPIFFS.end();
+    }
+
+    // Check for SD card
+    #ifdef SD_MMC_H
+    if (SD_MMC.begin()) {
+        disks.push_back("sdmmc");
+        SD_MMC.end();
+    }
+    #endif
+
+    #ifdef SD_H
+    if (SD.begin()) {
+        disks.push_back("sd");
+        SD.end();
+    }
+    #endif
+
+    if (disks.empty()) {
+        Serial.println("No disks found.");
+    } else {
+        for (const auto& disk : disks) {
+            Serial.print("Found disk: ");
+            Serial.println(disk.c_str());
+        }
+    }
+}
 void Kernel::shutdown() {
     if (!initialized) {
         return;

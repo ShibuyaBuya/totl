@@ -10,6 +10,8 @@
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
 #include <freertos/semphr.h>
+#include <vector>
+#include <string>
 #include "../config/config.h"
 #include "scheduler.h"
 #include "memory.h"
@@ -35,6 +37,8 @@ public:
     
     // Core kernel functions
     bool init();
+    void diskList(std::vector<std::string> &disks);
+    
     void shutdown();
     bool isHealthy() const { return healthy; }
     

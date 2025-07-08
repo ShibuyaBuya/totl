@@ -19,6 +19,11 @@ bool FileSystem::init() {
     if (initialized) {
         return true;
     }
+    // check if the disk is formatted
+    if (!SPIFFS.begin(FORMAT_SPIFFS_IF_FAILED)) {
+        Serial.println("FileSystem: Failed to initialize SPIFFS");
+        return false;
+    }
     
     // Initialize SPIFFS
     if (!SPIFFS.begin(true)) { // Format if mount fails

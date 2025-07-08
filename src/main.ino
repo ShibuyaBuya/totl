@@ -39,13 +39,7 @@ void setup() {
     Serial.println("[OK] Hardware Abstraction Layer initialized");
     
     // Initialize File System
-    fs_ = new FileSystem();
-    if (!fs_->init()) {
-        Serial.println("WARNING: File System initialization failed");
-        // Continue without filesystem - non-critical
-    } else {
-        Serial.println("[OK] File System initialized");
-    }
+    
     
     // Initialize Kernel (task scheduler and memory management)
     kernel = new Kernel();
@@ -54,7 +48,13 @@ void setup() {
         while(1) delay(1000); // Halt system
     }
     Serial.println("[OK] Kernel initialized");
-    
+    fs_ = new FileSystem();
+    if (!fs_->init()) {
+        Serial.println("WARNING: File System initialization failed");
+        // Continue without filesystem - non-critical
+    } else {
+        Serial.println("[OK] File System initialized");
+    }
     // Initialize Shell interface
     shell = new Shell();
     if (!shell->init()) {
